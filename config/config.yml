@@ -1,0 +1,5 @@
+environment: dev
+mongo:
+  server: mongodb://LocalHost:27017
+  database: gallery
+  collections: posts

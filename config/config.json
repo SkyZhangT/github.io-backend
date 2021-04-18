@@ -2,7 +2,7 @@
   "Environment": "dev",
   "Token": "augustsky",
   "Mongo": {
-    "Server": "mongodb://mongo:27017",
+    "Server": "mongodb://LocalHost:27017",
     "Database": "gallery",
     "Collection": "post"
   }

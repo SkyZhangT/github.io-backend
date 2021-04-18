@@ -1,12 +1,9 @@
 package database
 
 import (
-	"context"
-
 	"github.io-backend/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -20,12 +17,8 @@ type DBInterface interface {
 	Search(interface{}) ([]models.Item, error)
 }
 
-type PostsClient struct{
-	Ctx context.Context
-	Col *mongo.Collection
-}
 
-func (c *PostsClient) Insert(data models.Item) (models.Item, error){
+func (c *PostDB) Insert(data models.Item) (models.Item, error){
 	item := models.Item{}
 
 	res, err := c.Col.InsertOne(c.Ctx, data)
@@ -36,7 +29,7 @@ func (c *PostsClient) Insert(data models.Item) (models.Item, error){
 	return c.Get(id)
 }
 
-func (c *PostsClient) Delete(id string) (int64, error){
+func (c *PostDB) Delete(id string) (int64, error){
 	var count int64 = 0
 
 	_id, err := primitive.ObjectIDFromHex(id)
@@ -51,7 +44,7 @@ func (c *PostsClient) Delete(id string) (int64, error){
 	return res.DeletedCount, nil
 }
 
-func (c *PostsClient) Get(id string) (models.Item, error){
+func (c *PostDB) Get(id string) (models.Item, error){
 	item := models.Item{}
 
 	_id, err := primitive.ObjectIDFromHex(id)
@@ -67,7 +60,7 @@ func (c *PostsClient) Get(id string) (models.Item, error){
 	return item, nil
 }
 
-func (c *PostsClient) NextTen(offset int64) ([]models.Item, error){
+func (c *PostDB) NextTen(offset int64) ([]models.Item, error){
 	items := []models.Item{}
 
 	findOptions := options.Find()
@@ -89,7 +82,7 @@ func (c *PostsClient) NextTen(offset int64) ([]models.Item, error){
 	return items, nil
 }
 
-func (c *PostsClient) Search(filter interface{}) ([]models.Item, error){
+func (c *PostDB) Search(filter interface{}) ([]models.Item, error){
 	items := []models.Item{}
 	if filter == nil{
 		filter = bson.M{}

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"github.io-backend/config"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,16 +13,15 @@ import (
 
 
 type PostDB struct{
-	client mongo.Client
-	db 	mongo.Database
-	col mongo.Collection
+	Client mongo.Client
+	DB 	mongo.Database
+	Col mongo.Collection
+	Ctx context.Context
 }
 
 
 
-func Initdb(conf config.MongoConfiguration) *PostDB{
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	
+func Initdb(ctx context.Context, conf config.MongoConfiguration) *PostDB{
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(conf.Server))
 	if err != nil {
 		log.Fatal(err)
@@ -40,13 +38,12 @@ func Initdb(conf config.MongoConfiguration) *PostDB{
 	collection := database.Collection(conf.Collection)
 
 
-	return &PostDB{client: *client, db: *database, col: *collection}
+	return &PostDB{Client: *client, DB: *database, Col: *collection, Ctx: ctx}
 }
 
  
 func (p *PostDB) Printdb(){
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	databases, err := p.client.ListDatabaseNames(ctx, bson.M{})
+	databases, err := p.Client.ListDatabaseNames(p.Ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,7 +51,7 @@ func (p *PostDB) Printdb(){
 }
 
 func (p *PostDB) Close(){
-	err := p.client.Disconnect(context.TODO())
+	err := p.Client.Disconnect(context.TODO())
 
 	if err != nil {
 		log.Fatal(err)

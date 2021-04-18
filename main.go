@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.io-backend/config"
@@ -18,9 +19,10 @@ type Item struct {
 
 func main() {
 	conf := config.GetConfig()
-	fmt.Print(conf)
+	fmt.Println(conf)	
+	ctx := context.TODO()
 
-	db := database.Initdb(conf.Mongo)
+	db := database.Initdb(ctx, conf.Mongo)
 
 	db.Printdb()
 

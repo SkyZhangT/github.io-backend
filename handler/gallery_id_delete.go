@@ -8,7 +8,7 @@ import (
 )
 
   
-func GalleryDelete(db database.DBInterface) gin.HandlerFunc{
+func GalleryDeleteID(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
 		id := c.Param("id")
 		res, err := db.Delete(id)

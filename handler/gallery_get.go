@@ -12,9 +12,15 @@ import (
   
 func GalleryGet(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
+		fmt.Println(c.ClientIP())
+		fmt.Println(c.RemoteIP())
 		offset := c.Param("skip")
+		
+		if offset == "" {
+			offset = "1"
+		}
 		n, err := strconv.ParseInt(offset, 10, 64)
-		if err == nil {
+		if err != nil {
 			fmt.Printf("Int64 conversion failed. value: %d", n)
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return

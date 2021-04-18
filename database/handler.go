@@ -1,6 +1,8 @@
 package database
 
 import (
+	"fmt"
+
 	"github.io-backend/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -10,7 +12,6 @@ import (
 
 type DBInterface interface {
 	Insert(models.Item) (models.Item, error)
-	Update(string, interface{}) (int64, error)
 	Delete(string) (int64, error)
 	Get(string) (models.Item, error)
 	NextTen(int64) ([]models.Item, error)
@@ -23,6 +24,7 @@ func (c *PostDB) Insert(data models.Item) (models.Item, error){
 
 	res, err := c.Col.InsertOne(c.Ctx, data)
 	if err != nil{
+		fmt.Println(err)
 		return item, err
 	}
 	id := res.InsertedID.(primitive.ObjectID).Hex()
@@ -32,10 +34,13 @@ func (c *PostDB) Insert(data models.Item) (models.Item, error){
 func (c *PostDB) Delete(id string) (int64, error){
 	var count int64 = 0
 
+	fmt.Println(id)
 	_id, err := primitive.ObjectIDFromHex(id)
+	fmt.Println(err)
 	if err != nil{
 		return count, err
 	}
+
 
 	res, err := c.Col.DeleteOne(c.Ctx, bson.M{"_id": _id})
 	if err != nil{
@@ -68,7 +73,8 @@ func (c *PostDB) NextTen(offset int64) ([]models.Item, error){
 	findOptions.SetLimit(10)
 	findOptions.SetSkip(offset)
 
-	cursor, err := c.Col.Find(c.Ctx, findOptions)
+
+	cursor, err := c.Col.Find(c.Ctx, bson.D{}, findOptions)
 	if err != nil{
 		return items, err
 	}

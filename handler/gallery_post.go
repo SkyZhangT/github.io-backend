@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,25 +9,19 @@ import (
 	"github.io-backend/models"
 )
 
-type galleryPostRequest struct {
-	Title   string   `json:"title"`
-	User    string   `json:"user"`
-	Time    string   `json:"time"`
-	Text    string   `json:"text"`
-	Picture []string `json:"picture"`
-}
-
 func GalleryPost(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
 		item := models.Item{}
 		err := c.BindJSON(&item)
 		if err != nil {
+			fmt.Println("Bind fail")
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
 
 		res, err := db.Insert(item)
 		if err != nil {
+			fmt.Println("Insert fail")
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}

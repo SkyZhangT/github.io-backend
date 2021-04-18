@@ -1,9 +1,13 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+)
+
 
 type Configuration struct {
 	Environment string
+	Token		string
 	Mongo       MongoConfiguration
 }
 
@@ -17,7 +21,7 @@ func GetConfig() Configuration {
 	conf := Configuration{}
 
 	viper.SetConfigName("config")
-	viper.SetConfigType("yml")
+	viper.SetConfigType("json")
 	viper.AddConfigPath("./config")
 
 	err := viper.ReadInConfig()

@@ -3,7 +3,6 @@ package handler
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -17,16 +16,12 @@ func ImagePost(path string) gin.HandlerFunc{
 	return func(c *gin.Context){
 		c.Request.ParseMultipartForm(30)
 
-		file, handler, err := c.Request.FormFile("image")
+		file, _, err := c.Request.FormFile("image")
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
 		defer file.Close()
-
-		fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-		fmt.Printf("File size: %+v\n", handler.Size)
-		fmt.Printf("MIME header: %+v\n", handler.Header)
 
 		fileBytes, err := ioutil.ReadAll(file)
 		if err != nil {

@@ -3,12 +3,13 @@ package handler
 import (
 	"net/http"
 
+	"app/database"
+
 	"github.com/gin-gonic/gin"
-	"github.io-backend/database"
 )
 
   
-func GalleryDeleteID(db database.DBInterface) gin.HandlerFunc{
+func PostDeleteID(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
 		id := c.Param("id")
 		res, err := db.Delete(id)

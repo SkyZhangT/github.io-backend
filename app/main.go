@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"app/config"
+	"app/database"
+	"app/handler"
+
 	"github.com/gin-gonic/gin"
-	"github.io-backend/config"
-	"github.io-backend/database"
-	"github.io-backend/handler"
 )
 
 type Item struct {
@@ -30,11 +31,15 @@ func main() {
 	server := gin.Default()
 
 	// server.Use(Authorization(conf.Token))
+	server.Use(handler.CORSMiddleware())
 
-	server.GET("/gallery", handler.GalleryGet(db))
-	server.POST("/gallery", handler.GalleryPost(db))
-	server.DELETE("/gallery/:id", handler.GalleryDeleteID(db))
-	server.GET("/gallery/:id", handler.GalleryGetID(db))
+	server.GET("/post", handler.PostGet(db))
+	server.POST("/post", handler.PostPost(db))
+	server.DELETE("/post/:id", handler.PostDeleteID(db))
+	server.GET("/post/:id", handler.PostGetID(db))
+	server.GET("/image/:id", handler.ImageIDGet(conf.Img_dir))
+	server.POST("/image", handler.ImagePost(conf.Img_dir))
+
 
 	server.Run()
 	db.Close()

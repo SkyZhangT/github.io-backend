@@ -3,25 +3,30 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+
+	"app/database"
 
 	"github.com/gin-gonic/gin"
-	"github.io-backend/database"
-	"github.io-backend/models"
 )
 
-func GalleryPost(db database.DBInterface) gin.HandlerFunc{
+  
+func PostGet(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
-		item := models.Item{}
-		err := c.BindJSON(&item)
+		offset := c.GetHeader("skip")
+		if offset == "" {
+			offset = "0"
+		}
+
+		n, err := strconv.ParseInt(offset, 10, 64)
 		if err != nil {
-			fmt.Println("Bind fail")
+			fmt.Printf("Int64 conversion failed. value: %d", n)
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
 
-		res, err := db.Insert(item)
+		res, err := db.NextTen(n)
 		if err != nil {
-			fmt.Println("Insert fail")
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}

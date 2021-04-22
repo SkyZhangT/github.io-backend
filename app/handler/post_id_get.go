@@ -3,12 +3,13 @@ package handler
 import (
 	"net/http"
 
+	"app/database"
+
 	"github.com/gin-gonic/gin"
-	"github.io-backend/database"
 )
 
   
-func GalleryGetID(db database.DBInterface) gin.HandlerFunc{
+func PostGetID(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
 		id := c.Param("id")
 		res, err := db.Get(id)

@@ -8,6 +8,7 @@ import (
 type Configuration struct {
 	Environment string
 	Token		string
+	Img_dir		string
 	Mongo       MongoConfiguration
 }
 

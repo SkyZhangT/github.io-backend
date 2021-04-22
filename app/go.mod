@@ -1,4 +1,4 @@
-module github.io-backend
+module app
 
 go 1.16
 

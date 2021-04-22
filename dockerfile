@@ -1,6 +1,6 @@
 FROM golang:alpine
 
-COPY . /app
+COPY ./app /app
 WORKDIR /app
 
 EXPOSE 8080

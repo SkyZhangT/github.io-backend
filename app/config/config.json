@@ -1,8 +1,9 @@
 {
   "Environment": "dev",
   "Token": "augustsky",
+  "img_dir": "/images",
   "Mongo": {
-    "Server": "mongodb://LocalHost:27017",
+    "Server": "mongodb://mongo:27017",
     "Database": "gallery",
     "Collection": "post"
   }

@@ -19,6 +19,10 @@ type PostDB struct{
 	Ctx context.Context
 }
 
+type auth struct{
+	Token string `json:"token" bson:"token"`
+}
+
 func Initdb(ctx context.Context, conf config.MongoConfiguration) *PostDB{
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(conf.Server))
 	if err != nil {
@@ -54,4 +58,15 @@ func (p *PostDB) Close(){
 		log.Fatal(err)
 	}
 	fmt.Println("Connection to MongoDB closed.")
+}
+
+func (p *PostDB) GetToken() string{
+	col := p.DB.Collection("authorization")
+	res := col.FindOne(p.Ctx, bson.D{})
+	fmt.Println(res)
+
+	row := auth{}
+	res.Decode(&row)
+
+	return row.Token
 }

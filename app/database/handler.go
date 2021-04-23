@@ -15,7 +15,7 @@ type DBInterface interface {
 	Insert(models.Item) (models.Item, error)
 	Delete(string) (int64, error)
 	Get(string) (models.Item, error)
-	NextTen(int64) ([]models.Item, error)
+	GetPage(int64) ([]models.Item, error)
 	Search(interface{}) ([]models.Item, error)
 }
 
@@ -66,13 +66,13 @@ func (c *PostDB) Get(id string) (models.Item, error){
 	return item, nil
 }
 
-func (c *PostDB) NextTen(offset int64) ([]models.Item, error){
+func (c *PostDB) GetPage(pageNumber int64) ([]models.Item, error){
 	items := []models.Item{}
 
 	findOptions := options.Find()
 	findOptions.SetSort(bson.M{"time": -1})
 	findOptions.SetLimit(10)
-	findOptions.SetSkip(offset)
+	findOptions.SetSkip(pageNumber*10)
 
 
 	cursor, err := c.Col.Find(c.Ctx, bson.D{}, findOptions)

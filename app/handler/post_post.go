@@ -10,8 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostPost(db database.DBInterface) gin.HandlerFunc{
+func PostPost(db database.DBInterface, token string) gin.HandlerFunc{
 	return func(c *gin.Context){
+		auth := c.GetHeader("Authorization")
+		if auth != token {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid authentication"})
+			return
+		}
+
 		item := models.Item{}
 		err := c.BindJSON(&item)
 		if err != nil {

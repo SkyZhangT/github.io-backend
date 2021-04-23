@@ -11,34 +11,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Item struct {
-	Title   string   `json:"title"`
-	User    string   `json:"user"`
-	Time    string   `json:"time"`
-	Text    string   `json:"text"`
-	Picture []string `json:"picture"`
-}
-
 func main() {
 	conf := config.GetConfig()
 	fmt.Println(conf)	
 	ctx := context.TODO()
 
 	db := database.Initdb(ctx, conf.Mongo)
+	token := db.GetToken()
+	fmt.Println(token)
 
 	db.Printdb()
 
 	server := gin.Default()
 
-	// server.Use(Authorization(conf.Token))
+	// server.Use(Authorization(token))
 	server.Use(handler.CORSMiddleware())
 
+
 	server.GET("/post", handler.PostGet(db))
-	server.POST("/post", handler.PostPost(db))
-	server.DELETE("/post/:id", handler.PostDeleteID(db))
+	server.POST("/post", handler.PostPost(db, token))
+	server.DELETE("/post/:id", handler.PostDeleteID(db, token))
 	server.GET("/post/:id", handler.PostGetID(db))
-	server.GET("/image/:id", handler.ImageIDGet(conf.Img_dir))
-	server.POST("/image", handler.ImagePost(conf.Img_dir))
+	server.POST("/image", handler.ImagePost(conf.Img_dir, token))
+	server.Static("/images", "/images/")
 
 
 	server.Run()

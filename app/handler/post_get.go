@@ -13,19 +13,19 @@ import (
   
 func PostGet(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
-		offset := c.GetHeader("skip")
-		if offset == "" {
-			offset = "0"
+		page := c.Param("p")
+		if page == "" {
+			page = "0"
 		}
 
-		n, err := strconv.ParseInt(offset, 10, 64)
+		n, err := strconv.ParseInt(page, 10, 64)
 		if err != nil {
 			fmt.Printf("Int64 conversion failed. value: %d", n)
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
 
-		res, err := db.NextTen(n)
+		res, err := db.GetPage(n)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return

@@ -12,6 +12,7 @@ import (
 func PostGetID(db database.DBInterface) gin.HandlerFunc{
 	return func(c *gin.Context){
 		id := c.Param("id")
+
 		res, err := db.Get(id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

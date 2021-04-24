@@ -8,4 +8,6 @@ type Item struct {
 	Time     int64       `json:"time" bson:"time"`
 	Text     string      `json:"text" bson:"text"`
 	Images   interface{} `json:"images" bson:"images"`
+	Likes    int64       `json:"likes" bson:"likes"`
+	Comments interface{} `json:"comments" bson:"comments"`
 }

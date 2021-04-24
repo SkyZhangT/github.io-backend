@@ -33,6 +33,8 @@ func main() {
 	server.DELETE("/post/:id", handler.PostDeleteID(db, token))
 	server.GET("/post/:id", handler.PostGetID(db))
 	server.POST("/image", handler.ImagePost(conf.Img_dir, token))
+	server.PUT("/like/:id", handler.LikePutID(db))
+	
 	server.Static("/images", "/images/")
 
 

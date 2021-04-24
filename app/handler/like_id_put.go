@@ -3,29 +3,31 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"app/database"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-  
-func PostGet(db database.DBInterface) gin.HandlerFunc{
-	return func(c *gin.Context){
-		page := c.Query("page")
-		if page == "" {
-			page = "0"
-		}
+type like struct {
+	Inc		bool	`json:"inc"`
+}
 
-		n, err := strconv.ParseInt(page, 10, 64)
+  
+func LikePutID(db database.DBInterface) gin.HandlerFunc{
+	return func(c *gin.Context){
+		id := c.Param("id")
+
+		payload := like{}
+		err := c.BindJSON(&payload)
 		if err != nil {
-			fmt.Printf("Int64 conversion failed. value: %d", n)
+			fmt.Println("Bind fail")
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
 
-		res, err := db.GetPage(n)
+		res, err := db.Update(id, bson.D{{Key: "$inc", Value: bson.D{{Key: "likes", Value: 1}}}})
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
@@ -34,3 +36,4 @@ func PostGet(db database.DBInterface) gin.HandlerFunc{
 		c.JSON(http.StatusOK, res)
 	}
 }
+	

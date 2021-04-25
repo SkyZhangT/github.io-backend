@@ -10,12 +10,21 @@ type Configuration struct {
 	Token		string
 	Img_dir		string
 	Mongo       MongoConfiguration
+	Limiter	LimiterConfiguration
 }
 
 type MongoConfiguration struct {
 	Server     string
 	Database   string
 	Collection string
+}
+
+type LimiterConfiguration struct {
+	Max int
+    Methods []string
+    TokenBucketTTL int
+	Message string
+    ContentType string
 }
 
 func GetConfig() Configuration {

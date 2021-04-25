@@ -8,6 +8,7 @@ import (
 	"app/database"
 	"app/handler"
 
+	"github.com/didip/tollbooth_gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,11 +23,15 @@ func main() {
 
 	db.Printdb()
 
+	lmt := handler.Limiter(conf.Limiter)
+
 	server := gin.Default()
 
 	// server.Use(Authorization(token))
+	// CORS middleware
 	server.Use(handler.CORSMiddleware())
-
+	// request limiter middleware
+	server.Use(tollbooth_gin.LimitHandler(lmt))
 
 	server.GET("/post", handler.PostGet(db))
 	server.POST("/post", handler.PostPost(db, token))

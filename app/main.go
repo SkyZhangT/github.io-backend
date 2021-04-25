@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"app/config"
 	"app/database"
@@ -51,7 +52,7 @@ func Authorization(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("Authorization")
 		if token != auth {
-			c.AbortWithStatusJSON(401, gin.H{"message": "Invalid authorization token"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "Invalid authorization token"})
 			return
 		}
 		c.Next()

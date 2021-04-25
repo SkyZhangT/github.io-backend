@@ -54,9 +54,7 @@ func (c *PostDB) Update(id string, filter bson.D) (int64, error){
 func (c *PostDB) Delete(id string) (int64, error){
 	var count int64 = 0
 
-	fmt.Println(id)
 	_id, err := primitive.ObjectIDFromHex(id)
-	fmt.Println(err)
 	if err != nil{
 		return count, err
 	}
